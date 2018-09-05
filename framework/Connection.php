@@ -24,8 +24,8 @@ class Connection
 
     protected function init( $dsn, $username, $password, $option){
         try {
-
-            self::$pdo = new \PDO($dsn, $username, $password,array(\PDO::ATTR_PERSISTENT => true));
+            $option = $option?:array(\PDO::ATTR_PERSISTENT => true);
+            self::$pdo = new \PDO($dsn, $username, $password,$option);
 
         } catch ( \PDOException $e ) {
             throw new  \Exception($e -> getMessage ());

@@ -7,10 +7,6 @@
  */
 
 namespace openyii\framework;
-use openyii\modules\controllers;
-use openyii\framework\CRequest;
-use openyii\framework\base;
-
 
 class CWebApplication
 {
@@ -54,11 +50,9 @@ class CWebApplication
 
         $config = self::$_app;
 
-        CRequest::init( $config );
-
         base::$app = new \stdClass();
-        base::$app->request = CRequest::$queryParams;
-        base::$app->request->method = CRequest::$method;
+
+        CRequest::init( $config );
 
         if( isset($config->db) ){
             $Connection = new Connection( $config->db );

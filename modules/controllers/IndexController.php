@@ -10,6 +10,7 @@
 namespace openyii\modules\controllers;
 
 use openyii\framework\CController;
+use openyii\framework\CUrl;
 use openyii\modules\models\Article;
 use openyii\modules\models\IndexModels;
 
@@ -20,7 +21,6 @@ class IndexController extends CController
      * 首页
      */
     public function actionIndex(){
-
         echo '土人';die;
         $article = new Article();
         $findRes = $article ->find();

@@ -14,19 +14,38 @@ class CRequest
     public static $queryParams;   //参数
     public static $route;   //路由
     public static $method;   //请求方式
+    public static $instance;   //实例
+
+    private function __construct()
+    {
+        self::$queryParams = new \stdClass();
+
+    }
 
     public static function init( $config )
     {
+        if( !self::$instance ){
+            self::$instance = new CRequest();
+        }
         $urlManager = isset($config->urlManager)?$config->urlManager:'';
-       self::getUrl( $urlManager );
+        self::$instance->getUrl( $urlManager );
+        self::$instance->loadMoudle();
+        return self::$instance;
+    }
+
+    /**
+     * 载入$app 模块
+     */
+    public function loadMoudle(  ){
+        base::$app->request = self::$queryParams;
+        base::$app->request->method = self::$method;
     }
 
     /**
      * get url params
      */
-    public static function getUrl( $urlManager ){
+    public  function getUrl( $urlManager ){
         $REQUEST_URI = $_SERVER['REQUEST_URI'];
-        self::$queryParams = new \stdClass();
         $paths = parse_url($REQUEST_URI);
         if( $paths['path']!='/' ) {
             self::$route = trim($paths['path'],'/');

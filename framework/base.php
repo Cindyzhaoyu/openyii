@@ -11,7 +11,9 @@ namespace openyii\framework;
 
 class base
 {
-  public static $app;
-
+    /**
+     * @var  the application instance
+     */
+   public static $app;
 
 }
