@@ -8,6 +8,7 @@
 
 namespace openyii\framework;
 
+use openyii\modules\controllers;
 class CWebApplication
 {
     private static $_app;
@@ -62,7 +63,7 @@ class CWebApplication
         if( CRequest::$route ){
             self::commonSite(CRequest::$route);
         }else{
-            $this::defaultSite();
+            $this::commonSite(trim(self::$_app ->defaultRoute));
         }
 
     }
@@ -82,24 +83,25 @@ class CWebApplication
         $defaultAction = (string) substr($route,$pos+1);
 
         $className = ucfirst($defaultController)."Controller";      // 函数把字符串中的首字符转换为大写
-        $classFile = __DIR__."/../modules/controllers/".$className.".php";
+        $functionName = "action".ucfirst($defaultAction);
 
-        if(is_file($classFile)){
+        if(is_file(__DIR__."/../modules/controllers/".$className.".php")){
 
             if(!class_exists($className,false)){
 
-                require $classFile;
+                //获取控制器对象
+                $reflector = new \ReflectionClass( "openyii\modules\controllers\\{$className}");
+                $instance  = $reflector->newInstance( );  // 相当于实例化 类
 
-                $className = "openyii\\modules\\controllers\\".$className;
-                $class = new $className;
-                $functionName = "action".ucfirst($defaultAction);
-
-                if(!method_exists($class,$functionName)){
-                    echo '未定义'.$functionName.'方法！';
-
-                }else{
-                    $class ->$functionName();
+                if( !$reflector->hasMethod($functionName) ){
+//                    $m = $reflector->getmethod('http_output');
+//                    $m->invokeArgs($instance,['404']);
+                    self::commonSite("index/error");
                 }
+
+                //反射执行动作方法
+                $method = $reflector->getmethod($functionName);
+                $method->invoke($instance);
             }
 
         }else{
@@ -109,50 +111,6 @@ class CWebApplication
         }
 
     }
-
-
-//    /**
-//     * 站点跳转方法
-//     * @param $route
-//     */
-//    private static function commonSite($route){
-//
-//        header("Content-type: text/html; charset=utf-8");
-//        $pos = strpos($route,'/');   // 查找字符串在另一字符串中第一次出现的位置
-//
-//        $defaultController = substr($route,0,$pos);
-//        $defaultController = strtolower($defaultController); //  把所有字符转换为小写
-//        $defaultAction = (string) substr($route,$pos+1);
-//
-//        $className = ucfirst($defaultController)."Controller";      // 函数把字符串中的首字符转换为大写
-//        $classFile = __DIR__."/modules/controllers/".$className.".php";
-//
-//        if(is_file($classFile)){
-//
-//            if(!class_exists($className,false)){
-//
-//                require $classFile;
-//                $class = new $className;
-//                $functionName = "action".ucfirst($defaultAction);
-//
-//                if(!method_exists($class,$functionName)){
-//                    echo '未定义'.$functionName.'方法！';
-//
-//                }else{
-//                    $class ->$functionName();
-//                }
-//
-//
-//            }
-//
-//        }else{
-//
-//            self::commonSite("index/error");
-//
-//        }
-//
-//    }
-
 
     /**
      * 默认路由设置

@@ -25,7 +25,7 @@ class CController {
 
         }else{
 
-            extract($data,EXTR_PREFIX_SAME,'data');
+            extract($data,EXTR_PREFIX_SAME,'data');         //将$data数组的键作为变量名，值为键值
 
             // todo 新增头部信息
             require __DIR__.'/../modules/views/layouts/'.$this->layouts."/header.php";

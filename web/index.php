@@ -8,6 +8,7 @@
 
 require __DIR__ . "/../framework/CWebApplication.php";
 require __DIR__. "/../framework/autoload.php";
+require(__DIR__ . '/../vendor/autoload.php');
 
 $config = __DIR__ . "/../config/main.php";
 
