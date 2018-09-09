@@ -55,9 +55,19 @@ class CWebApplication
 
         CRequest::init( $config );
 
+        base::$app->id = isset($config->id)?$config->id:'';
+
         if( isset($config->db) ){
             $Connection = new Connection( $config->db );
             base::$app->db = $Connection::$pdo;
+        }
+
+        if( isset($config->redis) ){
+            new $config->redis['class']( $config->redis['class']['hostname'], $config->redis['class']['hostname'] );
+        }
+
+        if( isset($config->session) ){
+            new $config->session['class']( $config->session['keyPrefix'] );
         }
 
         if( CRequest::$route ){
