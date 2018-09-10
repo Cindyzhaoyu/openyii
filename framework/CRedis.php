@@ -22,6 +22,7 @@ class CRedis extends base
     {
         $redis = new \Redis();
         $redis->connect($hostname,$port,$this->timeout);
+        if( !$redis->ping() ) throw new \Exception('Redis server cannot be connected');
         base::$app->redis = $redis;
     }
 

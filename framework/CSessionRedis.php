@@ -15,7 +15,7 @@ class CSessionRedis extends CSession
     protected $redisInstance;
     public $keyPrefix;          //键前缀
 
-    private function __construct( $keyPrefix )
+    public function __construct( $keyPrefix )
     {
         $this->keyPrefix = $keyPrefix;
         session_set_save_handler(
