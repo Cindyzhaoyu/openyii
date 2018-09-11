@@ -17,18 +17,15 @@ use openyii\modules\models\IndexModels;
 class IndexController extends CController
 {
      public $layouts = "main";
+
     /**
      * 首页
      */
     public function actionIndex(){
-        echo '土人';die;
-        $article = new Article();
-        $findRes = $article ->find();
+        $this->layouts = false;
+        $result = 'Welcome to OpenYii!';
 
-        $indexModelsRes = new IndexModels();
-        $indexModelsRes ->test();
-
-        return $this ->render('index/index',array('result'=>$findRes));
+        return $this ->render('index/index',array('result'=>$result));
 
     }
 

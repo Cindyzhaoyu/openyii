@@ -1,7 +1,7 @@
 # openyii
 参考yii开发的简易框架，基于MVC设计，结构清晰，有兴趣的人可以加入我们。
 
-##目录结构
+## 目录结构
 - config   配置项
    - db.php 数据库配置
    - main.php 主配置项
@@ -34,7 +34,7 @@ BaseModel.php    基础Model 基类
 CRequest.php     请求解析
 ```
 
-###Restful API
+### Restful API
 
 写在前面，restful 对url重写要求有点高，需要服务器做些处理，框架使用的是apache服务器，需要在web下添加 .htacess 文件，内容如下：
 ```shell
@@ -55,7 +55,7 @@ RewriteRule (.*)$ index.php
     }
 ```
 
-config.php 添加 
+main.php 添加
 ```php
  'rules' => [
         #控制器 =》 配置
@@ -130,10 +130,32 @@ class UserController extends CController
     }
  ...
 ```
+### redis
+main.php配置中增加：
+```
+...
+    'redis' => [
+        'class' => 'openyii\framework\CRedis',
+        'hostname' => '192.168.33.30',
+        'port' => 6379,
+    ],
+...
+```
 
-
-
-
+### session存贮
+main.php配置中增加：
+```php
+...
+    'session'=>[                                            //session存贮
+        'class'=>'openyii\framework\CSessionRedis',
+        'timeout'=>3600,
+        'keyPrefix'=>'sun',
+    ],
+...
+```
+ 通过选择不同的class来更换存储方式，目前支持如下：
+ - openyii\framework\CSessionRedis redis存储
+ - openyii\framework\CSessionMysql mysql存储（规划中）
   
 
 

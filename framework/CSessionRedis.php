@@ -1,77 +1,63 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: MW
+ * User: WalkingSun
  * Date: 2018/9/9
  * Time: 18:09
  */
 
 namespace openyii\framework;
 
-
 class CSessionRedis extends CSession
 {
-    protected static $instance;        //操作实例
     protected $redisInstance;
     public $keyPrefix;          //键前缀
+    public $lifeTime;
 
-    public function __construct( $keyPrefix )
+    public function __construct( $keyPrefix,$lifeTime=3600 )
     {
+        $this->lifeTime = $lifeTime;
         $this->keyPrefix = $keyPrefix;
         session_set_save_handler(
-            [$this, 'open'],
-            [$this, 'close'],
-            [$this, 'read'],
-            [$this, 'write'],
-            [$this, 'destroy'],
-            [$this, 'gc']);
+            array($this, 'open'),
+            array($this, 'close'),
+            array($this, 'read'),
+            array($this, 'write'),
+            array($this, 'destroy'),
+            array($this, 'gc')
+        );
         if ($this->keyPrefix === null) {
             $this->keyPrefix = substr(md5(base::$app->id), 0, 5);
         }
         session_start();            //以全局变量形式保存在一个session中并且会生成一个唯一的session_id，
     }
 
-
-    /**打开
-     * @return mixed
-     */
-    protected function open(){
+    function open($savePath, $sessionName)
+    {
         $this->redisInstance = base::$app->redis;
         return true;
     }
 
-    /**关闭
-     * @return mixed
-     */
-    protected function close(){
+    function close()
+    {
         return true;
     }
 
-    /**读取
-     * @return mixed
-     */
-    protected function read( $id ){
+    function read($id)
+    {
         if( !$this->redisInstance->exists($this->calculateKey($id)) ){
-            return false;
+            $this->redisInstance->set( $this->calculateKey($id),'' );
         }
         return $this->redisInstance->get( $this->calculateKey($id) );
     }
 
-    /**写入
-     * @return mixed
-     */
-    protected function write( $id, $value ,$timeout){
-        $this->redisInstance->set($this->calculateKey($id), $value, $timeout);
-        if( !$this->redisInstance->exists($this->calculateKey($id)) ){
-            return false;
-        }
-        return true;
+    function write($id, $value)
+    {
+        return $this->redisInstance->set($this->calculateKey($id), $value, $this->lifeTime)?true:false;
     }
 
-    /**销毁
-     * @return mixed
-     */
-    protected function destory( $id ){
+    function destroy($id)
+    {
         $this->redisInstance->delete($this->calculateKey($id));
         if( !$this->redisInstance->exists($this->calculateKey($id)) ){
             return false;
@@ -79,10 +65,8 @@ class CSessionRedis extends CSession
         return true;
     }
 
-    /**回收
-     * @return mixed
-     */
-    protected function gc( $maxLifetime ){
+    function gc($lifetime)
+    {
         return true;
     }
 
