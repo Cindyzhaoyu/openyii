@@ -9,7 +9,7 @@
 namespace openyii\framework;
 
 
-class CRedisHa extends CRedis
+class CRedisHa //extends CRedis
 {
     public static $sentinels = null;
 
@@ -17,27 +17,32 @@ class CRedisHa extends CRedis
 
     public $masterName;
 
-    public static function  open( $sentinels ,$master_name ){
-        self::$sentinels = $sentinels;
+    public  function  __construct( $config ){
+        self::$sentinels = $config['sentinels'];
         if (! self::$sentinels) {
             throw new \Exception("Sentinels must be set");
         }
 
-        foreach ($sentinels as $val){
+        foreach (self::$sentinels as $val){
             $s = explode(':',$val);
-            new CRedisHa($s[0],$s[1]);
+            new CRedis(['hostname'=>$s[0],'port'=>$s[1]]);
             $redis = base::$app->redis;
-            $infos = $redis->rawCommand('SENTINEL', 'masters');
+//            $infos = $redis->rawCommand('SENTINEL', 'masters');
 
             //根据所配置的主库redis名称获取对应的信息
-//master_name应该由运维告知（也可以由上一步的信息中获取）
-//            $infos = $redis->rawCommand('SENTINEL', 'master', $master_name);
+//            $infos = $redis->rawCommand('SENTINEL', 'master', $config['masterName']);
 
-//根据所配置的主库redis名称获取其对应从库列表及其信息
-//            $infos = $redis->rawCommand('SENTINEL', 'slaves', $master_name);
+            //根据所配置的主库redis名称获取其对应从库列表及其信息
+//            $infos = $redis->rawCommand('SENTINEL', 'slaves', $config['masterName']);
 
 //获取特定名称的redis主库地址
-//            $infos = $redis->rawCommand('SENTINEL', 'get-master-addr-by-name', $master_name);
+//            $infos = $redis->rawCommand('SENTINEL', 'get-master-addr-by-name', $config['masterName']);
+            $infos = $redis->rawCommand('info','Replication');
+            print_r( $infos );die;
+            new CRedis(['hostname'=>$infos[0],'port'=>$infos[1]]);
+
+            var_dump( base::$app->redis);die;
+
 
             //todo 找出master，返回实例
             return $redis;

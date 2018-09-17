@@ -63,7 +63,7 @@ class CWebApplication
         }
 
         if( isset($config->redis) ){
-            new $config->redis['class']( $config->redis['hostname'], $config->redis['port'] );
+            new $config->redis['class']( $config->redis );
         }
 
         if( isset($config->session) ){
