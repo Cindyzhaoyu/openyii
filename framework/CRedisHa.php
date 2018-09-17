@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: MW
+ * User: WalkingSun
  * Date: 2018/9/14
  * Time: 16:33
  */
@@ -9,7 +9,7 @@
 namespace openyii\framework;
 
 
-class CRedisHa //extends CRedis
+class CRedisHa
 {
     public static $sentinels = null;
 
@@ -17,12 +17,17 @@ class CRedisHa //extends CRedis
 
     public $masterName;
 
+    protected $hostname;
+    protected $port;
+
     public  function  __construct( $config ){
         self::$sentinels = $config['sentinels'];
         if (! self::$sentinels) {
             throw new \Exception("Sentinels must be set");
         }
 
+        $redis_master = [];
+        $num = ceil(count(self::$sentinels)/2);
         foreach (self::$sentinels as $val){
             $s = explode(':',$val);
             new CRedis(['hostname'=>$s[0],'port'=>$s[1]]);
@@ -30,24 +35,28 @@ class CRedisHa //extends CRedis
 //            $infos = $redis->rawCommand('SENTINEL', 'masters');
 
             //根据所配置的主库redis名称获取对应的信息
-//            $infos = $redis->rawCommand('SENTINEL', 'master', $config['masterName']);
+            $infos = $redis->rawCommand('SENTINEL', 'master', $config['masterName']);
 
             //根据所配置的主库redis名称获取其对应从库列表及其信息
 //            $infos = $redis->rawCommand('SENTINEL', 'slaves', $config['masterName']);
 
-//获取特定名称的redis主库地址
+            //获取特定名称的redis主库地址
 //            $infos = $redis->rawCommand('SENTINEL', 'get-master-addr-by-name', $config['masterName']);
-            $infos = $redis->rawCommand('info','Replication');
-            print_r( $infos );die;
-            new CRedis(['hostname'=>$infos[0],'port'=>$infos[1]]);
+//            $infos = $redis->rawCommand('info','Replication');
 
-            var_dump( base::$app->redis);die;
-
-
-            //todo 找出master，返回实例
-            return $redis;
+            $redis_master[$infos[3].':'.$infos[5]] = !isset($redis_master[$infos[3].':'.$infos[5]]) ?0:++$redis_master[$infos[3].':'.$infos[5]];
+            if( $redis_master[$infos[3].':'.$infos[5]]>= $num ) {
+                $this->hostname = $infos[3];
+                $this->port = $infos[5];
+                break;
+            }
         }
-        throw new \Exception('cannot find master');
+
+        if( !$this->hostname ) throw new \Exception('cannot find master');
+
+        new CRedis(['hostname'=>$this->hostname,'port'=>$this->port]);
+
+        return  base::$app->redis;
     }
 
 

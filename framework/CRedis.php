@@ -18,13 +18,13 @@ class CRedis extends base
     protected  $port = null;
     protected  $timeout=0;            //连接时长(可选, 默认为 0 ，无限链接时间)
 
-    public  function __construct( $config )
+    public  function __construct( $config , $showException=true )
     {
         $this->hostname = $config['hostname'];
         $this->port = $config['port'];
         $redis = new \Redis();
         $redis->connect($this->hostname,$this->port,$this->timeout);
-        if( !$redis->ping() ) throw new \Exception('Redis server cannot be connected');
+        if( $showException && !$redis->ping() ) throw new \Exception('Redis server cannot be connected');
         base::$app->redis = $redis;
     }
 
