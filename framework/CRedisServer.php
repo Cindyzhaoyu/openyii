@@ -46,8 +46,6 @@ class CRedisServer
 
         if( !$this->hostname ) throw new \Exception('cannot find master');
 
-//        new CRedis(['hostname'=>$this->hostname,'port'=>$this->port]);
-
         return  base::$app->redis;
     }
 
