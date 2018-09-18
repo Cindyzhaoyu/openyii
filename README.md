@@ -133,7 +133,7 @@ class UserController extends CController
 ### redis
 main.php配置中增加：
 - 单台redis服务
-```
+```php
 ...
     'redis' => [
         'class' => 'openyii\framework\CRedis',
@@ -143,7 +143,7 @@ main.php配置中增加：
 ...
 ```
 - 哨兵主从模式(redis服务ip可直接访问)：
-```
+```php
 ...
         'redis' => [
             'class' => 'openyii\framework\CRedisHa',
@@ -157,7 +157,7 @@ main.php配置中增加：
 ...
 ```
 - 哨兵主从模式(redis服务ip不可直接访问，ip映射访问)：
-```
+```php
 ...
     'redis' => [
         'class' => 'openyii\framework\CRedisServer',
