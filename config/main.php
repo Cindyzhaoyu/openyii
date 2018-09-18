@@ -22,23 +22,6 @@ return [
 //        'hostname' => '192.168.33.30',
 //        'port' => 6379,
 //    ],
-//    'redis' => [                                            //启用redis
-//        'class' => 'openyii\framework\CRedisHa',
-//        'sentinels' => [
-//            '192.168.33.30:5000',
-//            '192.168.33.30:5001',
-//            '192.168.33.30:5002',
-//        ],
-//        'masterName'=>'redis-master',
-//    ],
-    'redis' => [                                            //启用redis
-        'class' => 'openyii\framework\CRedisServer',
-        'servers' => [
-            '192.168.33.30:6379',
-            '192.168.33.30:6380',
-            '192.168.33.30:6381',
-        ]
-    ],
 //    'session'=>[                                            //session存贮
 //        'class'=>'openyii\framework\CSessionRedis',
 //        'timeout'=>3600,

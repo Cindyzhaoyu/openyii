@@ -132,6 +132,7 @@ class UserController extends CController
 ```
 ### redis
 main.php配置中增加：
+- 单台redis服务
 ```
 ...
     'redis' => [
@@ -139,6 +140,33 @@ main.php配置中增加：
         'hostname' => '192.168.33.30',
         'port' => 6379,
     ],
+...
+```
+- 哨兵主从模式(redis服务ip可直接访问)：
+```
+...
+        'redis' => [
+            'class' => 'openyii\framework\CRedisHa',
+            'sentinels' => [
+                '192.168.33.30:5000',       //哨兵服务ip:端口
+                '192.168.33.30:5001',
+                '192.168.33.30:5002',
+            ],
+            'masterName'=>'redis-master',   //主机名称
+        ],
+...
+```
+- 哨兵主从模式(redis服务ip不可直接访问，ip映射访问)：
+```
+...
+    'redis' => [
+        'class' => 'openyii\framework\CRedisServer',
+        'servers' => [
+            '192.168.33.30:6379',     //redis服务ip:端口
+            '192.168.33.30:6380',
+            '192.168.33.30:6381',
+        ]
+    ]
 ...
 ```
 
