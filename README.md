@@ -171,21 +171,43 @@ main.php配置中增加：
 ```
 
 ### session存贮
+ 通过选择不同的class来更换存储方式，目前支持如下：
+ - openyii\framework\CSessionRedis redis存储
+ - openyii\framework\CSessionDB mysql（暂时没提供其他数据库）存储
+#### redis
 main.php配置中增加：
 ```php
 ...
     'session'=>[                                            //session存贮
         'class'=>'openyii\framework\CSessionRedis',
-        'timeout'=>3600,
-        'keyPrefix'=>'sun',
+        'timeout'=>3600,                //过期时间
+        'keyPrefix'=>'sun',             //session设置 key前缀
     ],
 ...
 ```
- 通过选择不同的class来更换存储方式，目前支持如下：
- - openyii\framework\CSessionRedis redis存储
- - openyii\framework\CSessionMysql mysql存储（规划中）
-  
+#### mysql
+```php
+...
+      'session'=>[                                            //session存贮
+          'class'=>'openyii\framework\CSessionDB',
+          'timeout'=>3600,
+          'keyPrefix'=>'sun',
+          'tableName'=>'openYiiSession',            //DB表
+      ],
+...
+```
+需要提前建好存放session的表，存贮引擎建议memory，需要包含三个字段：jq_SessionId、jq_SessionValue、jq_ExpireTime。参考建表：
+```sql
+CREATE TABLE `openYiiSession` (
+  `jq_SessionId` varchar(255) NOT NULL,
+  `jq_SessionValue` varchar(800) NOT NULL,
+  `jq_ExpireTime` int(11) NOT NULL,
+  PRIMARY KEY (`jq_SessionId`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+```
 
+# 贡献
+有任何意见或建议都欢迎提 issue
 
 
 

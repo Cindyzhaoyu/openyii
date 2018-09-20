@@ -12,12 +12,12 @@ class CSessionRedis extends CSession
 {
     protected $redisInstance;
     public $keyPrefix;          //键前缀
-    public $lifeTime;
+    public $lifeTime = 3600;
 
-    public function __construct( $keyPrefix,$lifeTime=3600 )
+    public function __construct( $config  )
     {
-        $this->lifeTime = $lifeTime;
-        $this->keyPrefix = $keyPrefix;
+        $this->lifeTime = !empty($config['timeout'])?$config['timeout']:$this->lifeTime;
+        $this->keyPrefix = $config['keyPrefix'];
         session_set_save_handler(
             array($this, 'open'),
             array($this, 'close'),
@@ -48,6 +48,7 @@ class CSessionRedis extends CSession
         if( !$this->redisInstance->exists($this->calculateKey($id)) ){
             $this->redisInstance->set( $this->calculateKey($id),'' );
         }
+        $this->redisInstance->expire( $this->calculateKey($id) , $this->lifeTime);
         return $this->redisInstance->get( $this->calculateKey($id) );
     }
 
@@ -69,16 +70,5 @@ class CSessionRedis extends CSession
     {
         return true;
     }
-
-    /**
-     * 加密key
-     * @param $id
-     * @return string
-     */
-    protected function calculateKey($id)
-    {
-        return $this->keyPrefix . md5(json_encode([__CLASS__, $id]));
-    }
-
 
 }

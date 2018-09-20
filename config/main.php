@@ -14,7 +14,7 @@ return [
 
     "name" =>"my Application",
 
-//    'db' => require(__DIR__ . '/../config/db.php'),         //启用mysql
+    'db' => require(__DIR__ . '/../config/db.php'),         //启用mysql
 //    'urlManager' => require(__DIR__ . '/urlmanage.php'),    //启用restful
     'params' => require(__DIR__ . '/params.php'),
 //        'redis' => [                                            //启用redis
@@ -22,10 +22,11 @@ return [
 //        'hostname' => '192.168.33.30',
 //        'port' => 6379,
 //    ],
-//    'session'=>[                                            //session存贮
-//        'class'=>'openyii\framework\CSessionRedis',
-//        'timeout'=>3600,
-//        'keyPrefix'=>'sun',
-//    ],
+    'session'=>[                                            //session存贮
+        'class'=>'openyii\framework\CSessionDB',
+        'timeout'=>3600,
+        'keyPrefix'=>'sun',
+        'tableName'=>'openYiiSession',
+    ],
 
 ];

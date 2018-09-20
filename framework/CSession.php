@@ -48,4 +48,15 @@ abstract class CSession
      */
     abstract protected function gc( $lifetime );
 
+
+    /**
+     * 加密key
+     * @param $id
+     * @return string
+     */
+    public function calculateKey($id)
+    {
+        return $this->keyPrefix . md5(json_encode([__CLASS__, $id]));
+    }
+
 }

@@ -67,7 +67,7 @@ class CWebApplication
         }
 
         if( isset($config->session) ){
-            new $config->session['class']( $config->session['keyPrefix'] );
+            new $config->session['class']( $config->session );
         }
 
         if( CRequest::$route ){

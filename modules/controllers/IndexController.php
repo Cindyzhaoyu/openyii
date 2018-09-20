@@ -24,7 +24,6 @@ class IndexController extends CController
     public function actionIndex(){
         $this->layouts = false;
         $result = 'Welcome to OpenYii!';
-
         return $this ->render('index/index',array('result'=>$result));
 
     }
