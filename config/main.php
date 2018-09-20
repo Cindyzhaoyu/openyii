@@ -22,11 +22,11 @@ return [
 //        'hostname' => '192.168.33.30',
 //        'port' => 6379,
 //    ],
-    'session'=>[                                            //session存贮
-        'class'=>'openyii\framework\CSessionDB',
-        'timeout'=>3600,
-        'keyPrefix'=>'sun',
-        'tableName'=>'openYiiSession',
-    ],
+//    'session'=>[                                            //session存贮
+//        'class'=>'openyii\framework\CSessionDB',
+//        'timeout'=>3600,
+//        'keyPrefix'=>'sun',
+//        'tableName'=>'openYiiSession',
+//    ],
 
 ];
